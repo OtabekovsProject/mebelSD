@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mashxura Mebel | Modern Luxury Home Decor</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen">
+        <div class="loading-content">
+            <h2>Mashxura <span>Mebel</span></h2>
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scroll-top" class="scroll-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Header Section -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h2>Mashxura<span> Mebel</span></h2>
+            </div>
+            <nav class="navbar">
+                <ul class="nav-menu">
+                    <li><a href="#home">Bosh Menu</a></li>
+                    <li><a href="#catalog">Mahsulotlar</a></li>
+                    <li><a href="#about">Malumot</a></li>
+                    <li><a href="#contact">Aloqa</a></li>
+                    <li><a href="#" id="cart-icon"><i class="fas fa-shopping-cart"></i> <span class="cart-count">0</span></a></li>
+                    <li><a href="#" id="theme-toggle" class="theme-toggle">
+                        <div class="toggle-circle"></div>
+                    </a></li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Mashxura Mebelga Marhamat</h1>
+            <a href="#catalog" class="btn">Maxsulotlarni Korish</a>
+        </div>
+    </section>
+
+    <!-- Catalog Section -->
+    <section id="catalog" class="catalog">
+        <div class="container">
+            <h2 class="section-title">Mahsulotlar</h2>
+            <div class="catalog-header">
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Qidiring...">
+                    <button id="search-btn"><i class="fas fa-search"></i></button>
+                </div>
+                <div class="filters">
+                    <button class="filter-btn active" data-filter="all">Hammasi</button>
+                    <button class="filter-btn" data-filter="Table">Oshxona</button>
+                    <button class="filter-btn" data-filter="sofa">Kichkina Mebellar</button>
+                    <button class="filter-btn" data-filter="bed">Yumshoq Mebel Ugalok Divanlar</button>
+                    <button class="filter-btn" data-filter="lamp">Yotoqxona Toshagi</button>
+                    <button class="filter-btn" data-filter="stul">Stollar</button>
+                    <button class="filter-btn" data-filter="stuls">Stullar</button>
+                    <button class="filter-btn" data-filter="penal">penal</button>
+                </div>
+            </div>
+            <div class="catalog-grid" id="catalog-grid">
+                <!-- Products will be dynamically added here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text" data-aos="fade-right">
+               <h2 class="section-title">2015-yildan buyon qulaylik yaratamiz</h2>
+             <p>Sam Furniture da biz, mukammal dizayn beqiyos qulaylik bilan birga keladi, deb ishonamiz. Bizning sayohatimiz sodda bir g'oyadan boshlangan: uylarni chinakam uy-qadamga aylantiradigan mebel yaratish.</p>
+             <p>Kolleksiyamizdagi har bir mahsulot barqaror materiallar va vaqt sinovidan o'tgan estetika bilan puxta ishlangan bo'lib, bu sizning makoningizning yillar davomida stilli bo'lib qolishini ta'minlaydi.</p>
+                <div class="about-image" data-aos="fade-left">
+                    <img src="./images/10000.jpg" alt="Modern Interior">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Aloqa</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Nalumotlarimiz</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> Mebel Boyicha Uzbekistonda Eng sifatli Daraja</p>
+                    <p><i class="fas fa-phone"></i> +998 95 541 17 60</p>
+                    <p><i class="fas fa-envelope"></i> Mebel.Mashxura.uz</p>
+                </div>
+                <form class="contact-form" id="contact-form">
+                    <input type="text" placeholder="Your Name" required>
+                    <input type="email" placeholder="Your Email" required>
+                    <textarea placeholder="Your Message" required></textarea>
+                    <button type="submit" class="btn send-btn">Habar yuborish</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>Sam<span>Furniture</span></h2>
+                </div>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-pinterest"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Mebel Mashxura — Designed with passion.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Modal -->
+    <div class="modal cart-modal" id="cart-modal">
+        <div class="modal-content cart-content">
+            <span class="close-modal">&times;</span>
+            <h2>Your Cart</h2>
+            <div class="cart-items" id="cart-items">
+                <!-- Cart items will be added here -->
+            </div>
+            <div class="cart-total">
+                <h3>Total: $<span id="total-price">0.00</span></h3>
+                <button class="btn">Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Detail Modal -->
+    <div class="modal product-modal" id="product-modal">
+        <div class="modal-content product-content">
+            <span class="close-modal">&times;</span>
+            <div class="product-detail" id="product-detail">
+                <!-- Product details will be added here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparison Modal -->
+    <div class="modal comparison-modal" id="comparison-modal">
+        <div class="modal-content comparison-content">
+            <span class="close-modal">&times;</span>
+            <h2>Product Comparison</h2>
+            <div class="comparison-table" id="comparison-table">
+                <!-- Comparison table will be added here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
