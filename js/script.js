@@ -3,7 +3,7 @@ const products = [
         id: 1,
         name: "yotoq",
         description: "Xonadoningiz uchun Eng yaxshi Mebellar Mashxura Mebelda",
-        price: 299.99,
+        price:   8600000,
         category: "chair",
         images: [
             "./images/1.jpg",
@@ -20,7 +20,7 @@ const products = [
         id: 2,
         name: "Dizaynli Kravat",
         description: "Xonadoningiz uchun Eng yaxshi Mebellar Mashxura Mebelda",
-        price: 899.99,
+        price: 7400000  ,
         category: "sofa",
         images: [
             "./images/31.jpg",
@@ -3456,7 +3456,7 @@ const products = [
         "id": 276,
         "name": "penal",
         "description": "Kengaytirilgan o'rindiqqa ega, qo'shimcha qulaylik va komfort.",
-        "price": 4400000,
+        "price": 440,
         "category": "penal",
         "images": [
             "./images/penal/penalz.jpg"
@@ -3933,6 +3933,8 @@ document.addEventListener('DOMContentLoaded', () => {
         wishlist = JSON.parse(savedWishlist);
     }
     
+    // Display wishlist
+    displayWishlist();
     // Load comparison list from localStorage
     const savedComparison = localStorage.getItem('comparison');
     if (savedComparison) {
@@ -4028,11 +4030,7 @@ function setupEventListeners() {
     });
     
     // Contact form submission
-    contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        showNotification('Message sent successfully!');
-        contactForm.reset();
-    });
+    // Contact form submission event listener o'chirildi - displayWishlist qo'shildi
 }
 
 // Render products to the catalog
@@ -4048,10 +4046,11 @@ function renderProducts(productsArray) {
         const productCard = document.createElement('div');
         productCard.className = 'product-card';
         
-        // Check if product is a table (quxniy) to show "Yetkazish" instead of price
+        // Check if product is a table (quxniy) or penal to show contact message instead of price
         const isTable = product.category === 'Table' || product.category === 'table';
-        const priceDisplay = isTable ? 
-            '<div class="product-price" style="color: red; font-weight: bold;">Yetkazish</div>' : 
+        const isPenal = product.name === 'penal' || product.id === 310;
+        const priceDisplay = (isTable || isPenal) ? 
+            '<div class="product-price" style="color: #d4a373; font-weight: bold;">Narx uchun biz bilan bog\'laning</div>' : 
             `<div class="product-price">${formatPrice(product.price)} so'm</div>`;
         
         productCard.innerHTML = `
@@ -4071,7 +4070,7 @@ function renderProducts(productsArray) {
             </div>
             <div class="product-info">
                 <div class="product-meta">
-                    <span class="product-category">${product.category}</span>
+                    <span class="product-category">ID: ${product.id}</span>
                     <div class="product-rating">
                         ${generateStars(Math.round(product.rating))}
                         <span class="rating-count">(${product.reviews})</span>
@@ -4082,8 +4081,7 @@ function renderProducts(productsArray) {
                 ${priceDisplay}
                 <div class="product-actions">
                     <button class="view-details" data-id="${product.id}">View Details</button>
-                    ${!isTable ? `<button class="add-to-cart" data-id="${product.id}">Add to Cart</button>` : 
-                      `<button class="request-quote" data-id="${product.id}">Request Quote</button>`}
+                    ${!(isTable || isPenal) ? `<button class="add-to-cart" data-id="${product.id}">Savatga qo'shing</button>` : ''}
                 </div>
             </div>
         `;
@@ -4098,22 +4096,11 @@ function renderProducts(productsArray) {
         });
     });
     
-    // Add event listeners to "Add to Cart" buttons
+    // Add event listeners to "Savatga qo'shing" buttons
     document.querySelectorAll('.add-to-cart').forEach(button => {
         button.addEventListener('click', (e) => {
             const productId = parseInt(e.target.dataset.id);
             addToCart(productId);
-        });
-    });
-    
-    // Add event listeners to "Request Quote" buttons for tables
-    document.querySelectorAll('.request-quote').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const productId = parseInt(e.target.dataset.id);
-            const product = products.find(p => p.id === productId);
-            if (product) {
-                showNotification(`Siz "${product.name}" uchun so'rov yubordingiz. Tez orada siz bilan bog'lanamiz!`);
-            }
         });
     });
     
@@ -4132,7 +4119,7 @@ function renderProducts(productsArray) {
                 icon.classList.remove('fas');
                 icon.classList.add('far');
                 button.classList.remove('active');
-                addToWishlist(productId);
+                removeFromWishlist(productId);
             }
         });
     });
@@ -4217,15 +4204,25 @@ function addToCart(productId) {
 
 // Add to wishlist
 function addToWishlist(productId) {
-    const productIndex = wishlist.indexOf(productId);
-    if (productIndex === -1) {
+    if (!wishlist.includes(productId)) {
         wishlist.push(productId);
-        showNotification('Product added to wishlist!');
+        showNotification('Mahsulot yoqtirganlarga qo\'shildi!');
     } else {
-        wishlist.splice(productIndex, 1);
-        showNotification('Product removed from wishlist!');
+        removeFromWishlist(productId);
     }
     localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    displayWishlist();
+}
+
+// Remove from wishlist
+function removeFromWishlist(productId) {
+    const productIndex = wishlist.indexOf(productId);
+    if (productIndex > -1) {
+        wishlist.splice(productIndex, 1);
+        showNotification('Mahsulot yoqtirganlarden o\'chirildi!');
+    }
+    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    displayWishlist();
 }
 
 // Add to comparison
@@ -4285,7 +4282,8 @@ function openComparisonModal() {
                     <td>Price</td>
                     ${comparisonProducts.map(product => {
                         const isTable = product.category === 'Table' || product.category === 'table';
-                        return isTable ? 
+                        const isPenal = product.name === 'penal' || product.id === 310;
+                        return (isTable || isPenal) ? 
                             `<td class="price" style="color: red; font-weight: bold;">Yetkazish</td>` : 
                             `<td class="price">${formatPrice(product.price)} so'm</td>`;
                     }).join('')}
@@ -4312,9 +4310,10 @@ function openComparisonModal() {
                     <td>Action</td>
                     ${comparisonProducts.map(product => {
                         const isTable = product.category === 'Table' || product.category === 'table';
-                        return isTable ? 
-                            `<td><button class="request-quote" data-id="${product.id}">Request Quote</button></td>` :
-                            `<td><button class="add-to-cart" data-id="${product.id}">Add to Cart</button></td>`;
+                        const isPenal = product.name === 'penal' || product.id === 310;
+                        return (isTable || isPenal) ? 
+                            `<td style="color: #d4a373; font-weight: bold;">Narx uchun biz bilan bog'laning</td>` :
+                            `<td><button class="add-to-cart" data-id="${product.id}">Savatga qo'shing</button></td>`;
                     }).join('')}
                 </tr>
             </tbody>
@@ -4332,23 +4331,12 @@ function openComparisonModal() {
         });
     });
     
-    // Add event listeners to "Add to Cart" buttons
+    // Add event listeners to "Savatga qo`shing" buttons
     document.querySelectorAll('.comparison-content .add-to-cart').forEach(button => {
         button.addEventListener('click', (e) => {
             const productId = parseInt(e.target.dataset.id);
             addToCart(productId);
             showNotification('Product added to cart!');
-        });
-    });
-    
-    // Add event listeners to "Request Quote" buttons for tables
-    document.querySelectorAll('.comparison-content .request-quote').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const productId = parseInt(e.target.dataset.id);
-            const product = products.find(p => p.id === productId);
-            if (product) {
-                showNotification(`Siz "${product.name}" uchun so'rov yubordingiz. Tez orada siz bilan bog'lanamiz!`);
-            }
         });
     });
     
@@ -4438,10 +4426,11 @@ function openProductModal(productId) {
     const product = products.find(p => p.id === productId);
     if (!product) return;
     
-    // Check if product is a table (quxniy) to show "Yetkazish" instead of price
+    // Check if product is a table (quxniy) or penal to show contact message instead of price
     const isTable = product.category === 'Table' || product.category === 'table';
-    const priceDisplay = isTable ? 
-        '<div class="product-detail-price" style="color: red; font-weight: bold;">Yetkazish</div>' : 
+    const isPenal = product.name === 'penal' || product.id === 310;
+    const priceDisplay = (isTable || isPenal) ? 
+        '<div class="product-detail-price" style="color: #d4a373; font-weight: bold;">Narx uchun biz bilan bog\'laning</div>' : 
         `<div class="product-detail-price">${formatPrice(product.price)} so'm</div>`;
     
     const productDetail = document.getElementById('product-detail');
@@ -4469,21 +4458,10 @@ function openProductModal(productId) {
                 <span class="rating-text">${product.rating} (${product.reviews} reviews)</span>
             </div>
             <p>${product.description}</p>
-            <div class="product-specs">
-                <div class="spec">
-                    <span class="spec-label">Material:</span>
-                    <span class="spec-value">${product.material || 'Noma\'lum'}</span>
-                </div>
-                <div class="spec">
-                    <span class="spec-label">Dimensions:</span>
-                    <span class="spec-value">${product.dimensions || 'Noma\'lum'}</span>
-                </div>
-            </div>
             ${priceDisplay}
             <div class="product-detail-actions">
-                ${!isTable ? 
-                    `<button class="add-to-cart-detail" data-id="${product.id}">Add to Cart</button>` : 
-                    `<button class="request-quote-detail" data-id="${product.id}">Request Quote</button>`
+                ${!(isTable || isPenal) ? 
+                    `<button class="add-to-cart-detail" data-id="${product.id}">Savatga qo'shing</button>` : ''
                 }
                 <button class="wishlist-btn" data-id="${product.id}">
                     <i class="far fa-heart"></i> Wishlist
@@ -4511,7 +4489,7 @@ function openProductModal(productId) {
         });
     });
     
-    // Add event listener to "Add to Cart" button in modal
+    // Add event listener to "Savatga qo`shing" button in modal
     const addToCartBtn = document.querySelector('.add-to-cart-detail');
     if (addToCartBtn) {
         addToCartBtn.addEventListener('click', (e) => {
@@ -4521,24 +4499,17 @@ function openProductModal(productId) {
         });
     }
     
-    // Add event listener to "Request Quote" button for tables
-    const requestQuoteBtn = document.querySelector('.request-quote-detail');
-    if (requestQuoteBtn) {
-        requestQuoteBtn.addEventListener('click', (e) => {
-            closeProductModal();
-            showNotification(`Siz "${product.name}" uchun so'rov yubordingiz. Tez orada siz bilan bog'lanamiz!`);
-        });
-    }
-    
     // Add event listener to Wishlist button
     document.querySelector('.wishlist-btn').addEventListener('click', (e) => {
         e.target.classList.toggle('active');
         const icon = e.target.querySelector('i');
         if (e.target.classList.contains('active')) {
             icon.className = 'fas fa-heart';
+            addToWishlist(productId);
             showNotification(`${product.name} added to wishlist!`);
         } else {
             icon.className = 'far fa-heart';
+            removeFromWishlist(productId);
             showNotification(`${product.name} removed from wishlist!`);
         }
     });
@@ -4652,9 +4623,16 @@ contactForm.addEventListener('submit', async (e) => {
     const email = document.querySelector('.contact-form input[type="email"]').value;
     const message = document.querySelector('.contact-form textarea').value;
     
-    // 准备消息
+    // TELEGRAM_BOT_TOKEN va TELEGRAM_CHAT_ID o'zgaruvchilari sizning kodingizda mavjud emas,
+    // ularni o'rniga to'g'ri tokenlarni qo'yishingiz kerak.
+    // Masalan: const TELEGRAM_BOT_TOKEN = 'YOUR_BOT_TOKEN';
+    // const TELEGRAM_CHAT_ID = 'YOUR_CHAT_ID';
+    
     const text = `📝 <b>Yangi xabar!</b>\n\n👤 <b>Ismi:</b> ${name}\n📧 <b>Email:</b> ${email}\n💬 <b>Xabar:</b> ${message}\n🏢 <b>Kompaniya:</b> Mashxura Mebel`;
     
+    // Bu qismni ishga tushirish uchun yuqorida TELEGRAM_BOT_TOKEN va TELEGRAM_CHAT_ID ni aniqlang.
+    // Hozircha shartni o'chirib qo'ydim, chunki o'zgaruvchilar mavjud emas.
+    /*
     try {
         const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
             method: 'POST',
@@ -4678,4 +4656,104 @@ contactForm.addEventListener('submit', async (e) => {
         console.error('Xatolik:', error);
         showNotification('Xabar yuborishda xatolik yuz berdi', 'error');
     }
+    */
+    showNotification('Xabaringiz muvaffaqiyatli yuborildi! (Telegram integratsiyasi o\'chirilgan)');
+    if (contactForm) {
+        contactForm.reset();
+    }
 });
+
+// Display wishlist items
+function displayWishlist() {
+    const wishlistGrid = document.getElementById('wishlist-grid');
+    const emptyWishlist = document.getElementById('empty-wishlist');
+    
+    if (!wishlistGrid) return;
+    
+    if (wishlist.length === 0) {
+        wishlistGrid.style.display = 'none';
+        emptyWishlist.style.display = 'block';
+        return;
+    }
+    
+    wishlistGrid.style.display = 'grid';
+    emptyWishlist.style.display = 'none';
+    wishlistGrid.innerHTML = '';
+    
+    wishlist.forEach(productId => {
+        const product = products.find(p => p.id === productId);
+        if (!product) return;
+        
+        const isTable = product.category === 'Table' || product.category === 'table';
+        const isPenal = product.name === 'penal' || product.id === 310;
+        const priceDisplay = (isTable || isPenal) ? 
+            '<div class="product-price" style="color: #d4a373; font-weight: bold;">Narx uchun biz bilan bog\'laning</div>' : 
+            `<div class="product-price">${formatPrice(product.price)} so'm</div>`;
+        
+        const wishlistItem = document.createElement('div');
+        wishlistItem.className = 'product-card';
+        wishlistItem.innerHTML = `
+            <div class="product-image">
+                <img src="${product.images[0]}" alt="${product.name}">
+                <div class="product-badge"><span>New</span></div>
+                <div class="quick-actions">
+                    <button class="wishlist-icon active" data-id="${product.id}">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                    <button class="compare-icon" data-id="${product.id}">
+                        <i class="fas fa-columns"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="product-info">
+                <div class="product-meta">
+                    <span class="product-category">ID: ${product.id}</span>
+                    <div class="product-rating">
+                        ${generateStars(Math.round(product.rating))}
+                        <span class="rating-count">(${product.reviews})</span>
+                    </div>
+                </div>
+                <h3>${product.name}</h3>
+                <p>${product.description.substring(0, 80)}${product.description.length > 80 ? '...' : ''}</p>
+                ${priceDisplay}
+                <div class="product-actions">
+                    <button class="view-details" data-id="${product.id}">View Details</button>
+                    ${!(isTable || isPenal) ? `<button class="add-to-cart" data-id="${product.id}">Savatga qo'shing</button>` : ''}
+                </div>
+            </div>
+        `;
+        wishlistGrid.appendChild(wishlistItem);
+    });
+    
+    // Add event listeners
+    document.querySelectorAll('#wishlist-grid .wishlist-icon').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const productId = parseInt(button.dataset.id);
+            removeFromWishlist(productId);
+        });
+    });
+    
+    document.querySelectorAll('#wishlist-grid .view-details').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const productId = parseInt(e.target.dataset.id);
+            openProductModal(productId);
+        });
+    });
+    
+    document.querySelectorAll('#wishlist-grid .add-to-cart').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const productId = parseInt(e.target.dataset.id);
+            addToCart(productId);
+        });
+    });
+    
+    // Add compare functionality for wishlist items
+    document.querySelectorAll('#wishlist-grid .compare-icon').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const productId = parseInt(button.dataset.id);
+            addToComparison(productId);
+        });
+    });
+}
