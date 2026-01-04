@@ -21,7 +21,7 @@
                 <div class="blob blob-3"></div>
                 <div class="blob blob-4"></div>
             </div>
-            <p class="loading-text">Xush Kelibsiz   </p>
+            <p class="loading-text" data-i18n="loading.welcome">Xush Kelibsiz</p>
         </div>
     </div>
 
@@ -38,15 +38,23 @@
             </div>
             <nav class="navbar">
                 <ul class="nav-menu">
-                    <li><a href="#home">Bosh Menu</a></li>
-                    <li><a href="#catalog">Mahsulotlar</a></li>
-                    <li><a href="wishlist.html"> Yoqtirganlar</a></li>
-                    <li><a href="#about">Malumot</a></li>
-                    <li><a href="#contact">Aloqa</a></li>
-                    <li><a href="#" id="cart-icon"><i class="fas fa-shopping-cart"></i> <span class="cart-count">0</span></a></li>
+                    <li><a href="#home"><span data-i18n="nav.home">Bosh Menu</span></a></li>
+                    <li><a href="#catalog"><span data-i18n="nav.catalog">Mahsulotlar</span></a></li>
+                    <li><a href="wishlist.html"><span data-i18n="nav.wishlist">Yoqtirganlar</span></a></li>
+                    <li><a href="#about"><span data-i18n="nav.about">Malumot</span></a></li>
+                    <li><a href="#contact"><span data-i18n="nav.contact">Aloqa</span></a></li>
+                    <li><a href="#" id="cart-icon"><i class="fas fa-shopping-cart"></i> <span class="cart-count">0</span> <span data-i18n="nav.cart" class="sr-only">Cart</span></a></li>
                     <li><a href="#" id="theme-toggle" class="theme-toggle">
                         <div class="toggle-circle"></div>
                     </a></li>
+                    <li class="lang-li">
+                        <label for="lang-select" class="sr-only">Language</label>
+                        <select id="lang-select" class="lang-select" aria-label="Language selector">
+                            <option value="uz">O'zbek</option>
+                            <option value="en">English</option>
+                            <option value="ru">Русский</option>
+                        </select>
+                    </li>
                 </ul>
                 <div class="hamburger">
                     <span class="bar"></span>
@@ -59,35 +67,43 @@
 
     <!-- Hero Section -->
     <section id="home" class="hero">
+        <div class="hero-video">
+            <video id="hero-video" autoplay muted loop playsinline poster="https://i.postimg.cc/J4h69MNH/pap.jpg">
+                <source src="Mashhura Mebel.mp4" type="video/mp4">
+                <!-- Replace `images/hero.mp4` with your optimized MP4/WebM video file -->
+                Your browser does not support the video tag.
+            </video>
+        </div>
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h1>Mashxura Mebelga Marhamat</h1>
-            <a href="#catalog" class="btn">Maxsulotlarni Korish</a>
+            <h1 data-i18n="hero.title"></h1>
+            <p class="hero-subtitle" data-i18n="hero.subtitle">Zamonaviy va qulay mebellar — sizning uyingiz uchun</p>
+            <a href="#catalog" class="btn" data-i18n="cta.view_products">Maxsulotlarni Ko'rish</a>
         </div>
     </section>
 
     <!-- Catalog Section -->
     <section id="catalog" class="catalog">
         <div class="container">
-            <h2 class="section-title">Mahsulotlar</h2>
-            <div class="price-notice">
+            <h2 class="section-title" data-i18n="section.products">Mahsulotlar</h2>
+            <div class="price-notice" data-i18n="price.notice">
                 <i class="fas fa-info-circle"></i>
-                <span><strong>Eslatma:</strong> Saytda ko‘rsatilgan narxlar do‘kondagi amaldagi narxlarga mos kelmasligi mumkin. Aniq narxni bilish uchun biz bilan bog‘laning.</span>
+                <span><strong data-i18n="price.note_label">Eslatma:</strong> <span data-i18n="price.notice_text">Saytda ko‘rsatilgan narxlar do‘kondagi amaldagi narxlarga mos kelmasligi mumkin. Aniq narxni bilish uchun biz bilan bog‘laning.</span></span>
             </div>
             <div class="catalog-header">
                 <div class="search-container">
-                    <input type="text" id="search-input" placeholder="Qidiring...">
+                    <input type="text" id="search-input" placeholder="Qidiring..." data-i18n-placeholder="search.placeholder">
                     <button id="search-btn"><i class="fas fa-search"></i></button>
                 </div>
                 <div class="filters">
-                    <button class="filter-btn active" data-filter="all">Hammasi</button>
-                    <button class="filter-btn" data-filter="Table">Oshxona</button>
-                    <button class="filter-btn" data-filter="sofa">Kichkina Mebellar</button>
-                    <button class="filter-btn" data-filter="bed">Yumshoq Mebel Ugalok Divanlar</button>
-                    <button class="filter-btn" data-filter="lamp">Yotoqxona  mebeli </button>
-                    <button class="filter-btn" data-filter="stul">Stollar</button>
-                    <button class="filter-btn" data-filter="stuls">Stullar</button>
-                    <button class="filter-btn" data-filter="penal">penal</button>
+                    <button class="filter-btn active" data-filter="all" data-i18n="filters.all">Hammasi</button>
+                    <button class="filter-btn" data-filter="Table" data-i18n="filters.table">Oshxona</button>
+                    <button class="filter-btn" data-filter="sofa" data-i18n="filters.sofa">Kichkina Mebellar</button>
+                    <button class="filter-btn" data-filter="bed" data-i18n="filters.bed">Yumshoq Mebel</button>
+                    <button class="filter-btn" data-filter="lamp" data-i18n="filters.lamp">Yotoqxona</button>
+                    <button class="filter-btn" data-filter="stul" data-i18n="filters.stul">Stollar</button>
+                    <button class="filter-btn" data-filter="stuls" data-i18n="filters.stuls">Stullar</button>
+                    <button class="filter-btn" data-filter="penal" data-i18n="filters.penal">Penal</button>
                 </div>
             </div>
             <div class="catalog-grid" id="catalog-grid">
@@ -101,10 +117,10 @@
     <section id="about" class="about">
         <div class="container">
             <div class="about-content">
-                <div class="about-text" data-aos="fade-right">
-               <h2 class="section-title">2005-yildan buyon qulaylik yaratamiz</h2>
-             <p>Mashhura Mebelda  da biz, mukammal dizayn beqiyos qulaylik bilan birga keladi, deb ishonamiz. Bizning sayohatimiz sodda bir g'oyadan boshlangan: uylarni chinakam uy-qadamga aylantiradigan mebel yaratish.</p>
-             <p>Kolleksiyamizdagi har bir mahsulot barqaror materiallar va vaqt sinovidan o'tgan estetika bilan puxta ishlangan bo'lib, bu sizning makoningizning yillar davomida stilli bo'lib qolishini ta'minlaydi.</p>
+                                <div class="about-text" data-aos="fade-right">
+                             <h2 class="section-title" data-i18n="about.title">2005-yildan buyon qulaylik yaratamiz</h2>
+                         <p data-i18n="about.p1">Mashhura Mebelda biz mukammal dizayn va qulaylik birga keladi, deb ishonamiz. Bizning sayohatimiz sodda bir g'oyadan boshlangan: uylarni chinakam uyga aylantiradigan mebel yaratish.</p>
+                         <p data-i18n="about.p2">Kolleksiyamizdagi har bir mahsulot barqaror materiallar va vaqt sinovidan o'tgan estetika bilan puxta ishlangan, bu sizning makoningizni yillar davomida stil va qulay holda saqlaydi.</p>
                 <div class="about-image" data-aos="fade-left">
                     <img src="./images/10000.jpg" alt="Modern Interior">
                 </div>
@@ -115,13 +131,13 @@
     <!-- Contact Section -->
     <section id="contact" class="contact">
         <div class="container">
-            <h2 class="section-title">Aloqa</h2>
+            <h2 class="section-title" data-i18n="contact.title">Aloqa</h2>
             <div class="contact-content">
                 <div class="contact-info">
-                    <h3>Malumotlarimiz</h3>
-                    <p><i class="fas fa-map-marker-alt"></i> Mebel Boyicha Uzbekistonda Eng sifatli Daraja</p>
-                    <p><i class="fas fa-phone"></i> +998 95 541 17 60</p>
-                    <p><i class="fas fa-envelope"></i> mebelmashhura.uz</p>
+                    <h3 data-i18n="contact.heading">Malumotlarimiz</h3>
+                    <p data-i18n="contact.address"><i class="fas fa-map-marker-alt"></i> Mebel bo'yicha O'zbekistonda eng sifatli daraja</p>
+                    <p data-i18n="contact.phone"><i class="fas fa-phone"></i> +998 95 541 17 60</p>
+                    <p data-i18n="contact.email"><i class="fas fa-envelope"></i> mebelmashhura.uz</p>
                 </div>
              
             </div>
@@ -133,7 +149,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-logo">
-                    <h2>Mahhura <span>Furniture</span></h2>
+                    <h2 data-i18n="footer.brand">Mahhura <span>Furniture</span></h2>
                 </div>
                 <div class="social-icons">
                     <a href="https://www.instagram.com/mashhura_khiva?igsh=MTNyZXNvMmZvOTUwcQ=="><i class="fab fa-instagram"></i></a>
@@ -141,7 +157,7 @@
                 </div>
             </div>
             <div class="copyright">
-                <p>&copy; 2025 Mebel Mashxura </p>
+                <p data-i18n="footer.copy">&copy; 2025 Mebel Mashxura</p>
             </div>
         </div>
     </footer>
@@ -150,13 +166,13 @@
     <div class="modal cart-modal" id="cart-modal">
         <div class="modal-content cart-content">
             <span class="close-modal">&times;</span>
-            <h2>Your Cart</h2>
+            <h2 data-i18n="cart.title">Your Cart</h2>
             <div class="cart-items" id="cart-items">
                 <!-- Cart items will be added here -->
             </div>
             <div class="cart-total">
-                <h3>Total: $<span id="total-price">0.00</span></h3>
-                <button class="btn">umumiy narx</button>
+                <h3 data-i18n="cart.total">Total: $<span id="total-price">0.00</span></h3>
+                    <button class="btn" data-i18n="cart.checkout">umumiy narx</button>
             </div>
         </div>
     </div>
@@ -175,7 +191,7 @@
     <div class="modal comparison-modal" id="comparison-modal">
         <div class="modal-content comparison-content">
             <span class="close-modal">&times;</span>
-            <h2>Product Comparison</h2>
+            <h2 data-i18n="compare.title">Product Comparison</h2>
             <div class="comparison-table" id="comparison-table">
                 <!-- Comparison table will be added here -->
             </div>

@@ -21,7 +21,7 @@
                 <div class="blob blob-3"></div>
                 <div class="blob blob-4"></div>
             </div>
-            <p class="loading-text">Yoqtirganlar</p>
+            <p class="loading-text" data-i18n="loading.wishlist">Yoqtirganlar</p>
         </div>
     </div>
 
@@ -38,15 +38,23 @@
             </div>
             <nav class="navbar">
                 <ul class="nav-menu">
-                    <li><a href="index.html#home">Bosh Menu</a></li>
-                    <li><a href="index.html#catalog">Mahsulotlar</a></li>
-                    <li><a href="wishlist.html" class="active">❤️ Yoqtirganlar</a></li>
-                    <li><a href="index.html#about">Malumot</a></li>
-                    <li><a href="index.html#contact">Aloqa</a></li>
+                    <li><a href="index.html#home"><span data-i18n="nav.home">Bosh Menu</span></a></li>
+                    <li><a href="index.html#catalog"><span data-i18n="nav.catalog">Mahsulotlar</span></a></li>
+                    <li><a href="wishlist.html" class="active">❤️ <span data-i18n="nav.wishlist">Yoqtirganlar</span></a></li>
+                    <li><a href="index.html#about"><span data-i18n="nav.about">Malumot</span></a></li>
+                    <li><a href="index.html#contact"><span data-i18n="nav.contact">Aloqa</span></a></li>
                     <li><a href="index.html#" id="cart-icon"><i class="fas fa-shopping-cart"></i> <span class="cart-count">0</span></a></li>
                     <li><a href="#" id="theme-toggle" class="theme-toggle">
                         <div class="toggle-circle"></div>
                     </a></li>
+                    <li class="lang-li">
+                        <label for="lang-select" class="sr-only">Language</label>
+                        <select id="lang-select" class="lang-select" aria-label="Language selector">
+                            <option value="uz">O'zbek</option>
+                            <option value="en">English</option>
+                            <option value="ru">Русский</option>
+                        </select>
+                    </li>
                 </ul>
                 <div class="hamburger">
                     <span class="bar"></span>
@@ -61,8 +69,8 @@
     <section class="wishlist-page">
         <div class="container">
             <div class="wishlist-header">
-                <h1 class="page-title">❤️ Yoqtirganlar</h1>
-                <p class="page-subtitle">Sizning tanlagan mahsulotlaringiz</p>
+                <h1 class="page-title" data-i18n="wishlist.title">❤️ Yoqtirganlar</h1>
+                <p class="page-subtitle" data-i18n="wishlist.subtitle">Sizning tanlagan mahsulotlaringiz</p>
             </div>
             <div class="wishlist-grid" id="wishlist-grid">
                 <!-- Wishlist items will be dynamically added here -->
@@ -70,9 +78,9 @@
             <div class="empty-wishlist" id="empty-wishlist" style="display: none;">
                 <div class="empty-wishlist-content">
                     <i class="fas fa-heart-broken"></i>
-                    <h2>Hozircha yoqtirganlaringiz yo'q</h2>
-                    <p>Mahsulotlarni ko'rib chiqing va yoqtirganlar ro'yxatiga qo'shing</p>
-                    <a href="index.html#catalog" class="btn btn-primary">Mahsulotlarni ko'ring</a>
+                    <h2 data-i18n="wishlist.empty.title">Hozircha yoqtirganlaringiz yo'q</h2>
+                    <p data-i18n="wishlist.empty.text">Mahsulotlarni ko'rib chiqing va yoqtirganlar ro'yxatiga qo'shing</p>
+                    <a href="index.html#catalog" class="btn btn-primary" data-i18n="wishlist.empty.cta">Mahsulotlarni ko'ring</a>
                 </div>
             </div>
         </div>

@@ -4038,7 +4038,7 @@ function renderProducts(productsArray) {
     catalogGrid.innerHTML = '';
     
     if (productsArray.length === 0) {
-        catalogGrid.innerHTML = '<p class="no-products">No products found. Try a different search.</p>';
+        catalogGrid.innerHTML = '<p class="no-products" data-i18n="no_products">No products found. Try a different search.</p>';
         return;
     }
     
@@ -4057,7 +4057,7 @@ function renderProducts(productsArray) {
             <div class="product-image">
                 <img src="${product.images[0]}" alt="${product.name}">
                 <div class="product-badge">
-                    <span>New</span>
+                    <span data-i18n="product.new">New</span>
                 </div>
                 <div class="quick-actions">
                     <button class="wishlist-icon" data-id="${product.id}">
@@ -4070,23 +4070,28 @@ function renderProducts(productsArray) {
             </div>
             <div class="product-info">
                 <div class="product-meta">
-                    <span class="product-category">ID: ${product.id}</span>
+                    <span class="product-category"><span data-i18n="product.id_label">ID:</span> ${product.id}</span>
                     <div class="product-rating">
                         ${generateStars(Math.round(product.rating))}
                         <span class="rating-count">(${product.reviews})</span>
                     </div>
                 </div>
-                <h3>${product.name}</h3>
-                <p>${product.description.substring(0, 80)}${product.description.length > 80 ? '...' : ''}</p>
+                <h3 data-i18n="product.name.${product.id}">${product.name}</h3>
+                <p data-i18n="product.desc.${product.id}">${product.description.substring(0, 80)}${product.description.length > 80 ? '...' : ''}</p>
                 ${priceDisplay}
                 <div class="product-actions">
-                    <button class="view-details" data-id="${product.id}">View Details</button>
-                    ${!(isTable || isPenal) ? `<button class="add-to-cart" data-id="${product.id}">Savatga qo'shing</button>` : ''}
+                    <button class="view-details" data-id="${product.id}" data-i18n="product.view">View Details</button>
+                    ${!(isTable || isPenal) ? `<button class="add-to-cart" data-id="${product.id}" data-i18n="product.add_to_cart">Savatga qo'shing</button>` : ''}
                 </div>
             </div>
         `;
         catalogGrid.appendChild(productCard);
     });
+    // Re-apply translations to newly created nodes (if i18n initialized)
+    if (typeof applyTranslations === 'function') {
+        const lang = localStorage.getItem('site-lang') || document.documentElement.lang || 'uz';
+        applyTranslations(lang);
+    }
     
     // Add event listeners to "View Details" buttons
     document.querySelectorAll('.view-details').forEach(button => {
@@ -4199,14 +4204,19 @@ function addToCart(productId) {
     updateCartUI();
     
     // Show notification
-    showNotification(`${product.name} added to cart!`);
+    {
+        const lang = localStorage.getItem('site-lang') || document.documentElement.lang || 'uz';
+        const suffix = (i18n[lang] && i18n[lang]['notification.added_to_cart']) || 'added to cart!';
+        showNotification(`${product.name} ${suffix}`);
+    }
 }
 
 // Add to wishlist
 function addToWishlist(productId) {
-    if (!wishlist.includes(productId)) {
+        if (!wishlist.includes(productId)) {
         wishlist.push(productId);
-        showNotification('Mahsulot yoqtirganlarga qo\'shildi!');
+        const lang = localStorage.getItem('site-lang') || document.documentElement.lang || 'uz';
+        showNotification((i18n[lang] && i18n[lang]['notification.added_to_wishlist']) || 'Added to wishlist!');
     } else {
         removeFromWishlist(productId);
     }
@@ -4219,7 +4229,8 @@ function removeFromWishlist(productId) {
     const productIndex = wishlist.indexOf(productId);
     if (productIndex > -1) {
         wishlist.splice(productIndex, 1);
-        showNotification('Mahsulot yoqtirganlarden o\'chirildi!');
+        const lang = localStorage.getItem('site-lang') || document.documentElement.lang || 'uz';
+        showNotification((i18n[lang] && i18n[lang]['notification.removed_from_wishlist']) || 'Removed from wishlist!');
     }
     localStorage.setItem('wishlist', JSON.stringify(wishlist));
     displayWishlist();
@@ -4230,14 +4241,21 @@ function addToComparison(productId) {
     const productIndex = comparisonList.indexOf(productId);
     if (productIndex === -1) {
         if (comparisonList.length >= 4) {
-            showNotification('You can only compare up to 4 products!');
+            const lang = localStorage.getItem('site-lang') || document.documentElement.lang || 'uz';
+            showNotification((i18n[lang] && i18n[lang]['notification.compare_limit']) || 'You can only compare up to 4 products!');
             return;
         }
         comparisonList.push(productId);
-        showNotification('Product added to comparison!');
+        {
+            const lang = localStorage.getItem('site-lang') || document.documentElement.lang || 'uz';
+            showNotification((i18n[lang] && i18n[lang]['notification.added_to_comparison']) || 'Product added to comparison!');
+        }
     } else {
         comparisonList.splice(productIndex, 1);
-        showNotification('Product removed from comparison!');
+        {
+            const lang = localStorage.getItem('site-lang') || document.documentElement.lang || 'uz';
+            showNotification((i18n[lang] && i18n[lang]['notification.removed_from_comparison']) || 'Product removed from comparison!');
+        }
     }
     localStorage.setItem('comparison', JSON.stringify(comparisonList));
     updateComparisonUI();
@@ -4252,7 +4270,8 @@ function updateComparisonUI() {
 // Open comparison modal
 function openComparisonModal() {
     if (comparisonList.length === 0) {
-        showNotification('No products to compare!');
+        const lang = localStorage.getItem('site-lang') || document.documentElement.lang || 'uz';
+        showNotification((i18n[lang] && i18n[lang]['notification.no_products_compare']) || 'No products to compare!');
         return;
     }
     
@@ -4263,14 +4282,14 @@ function openComparisonModal() {
         <table>
             <thead>
                 <tr>
-                    <th>Features</th>
+                    <th data-i18n="compare.features">Features</th>
                     ${comparisonProducts.map(product => `
                         <th>
                             <div class="product-header">
                                 <div class="product-image">
                                     <img src="${product.images[0]}" alt="${product.name}">
                                 </div>
-                                <span>${product.name}</span>
+                                <span data-i18n="product.name.${product.id}">${product.name}</span>
                                 <button class="remove-btn" data-id="${product.id}">&times;</button>
                             </div>
                         </th>
@@ -4279,7 +4298,7 @@ function openComparisonModal() {
             </thead>
             <tbody>
                 <tr>
-                    <td>Price</td>
+                    <td data-i18n="compare.price">Price</td>
                     ${comparisonProducts.map(product => {
                         const isTable = product.category === 'Table' || product.category === 'table';
                         const isPenal = product.name === 'penal' || product.id === 310;
@@ -4289,31 +4308,31 @@ function openComparisonModal() {
                     }).join('')}
                 </tr>
                 <tr>
-                    <td>Rating</td>
+                    <td data-i18n="compare.rating">Rating</td>
                     ${comparisonProducts.map(product => `
                         <td>${generateStars(Math.round(product.rating))} (${product.reviews})</td>
                     `).join('')}
                 </tr>
                 <tr>
-                    <td>Material</td>
+                    <td data-i18n="compare.material">Material</td>
                     ${comparisonProducts.map(product => `
                         <td>${product.material || 'Noma\'lum'}</td>
                     `).join('')}
                 </tr>
                 <tr>
-                    <td>Dimensions</td>
+                    <td data-i18n="compare.dimensions">Dimensions</td>
                     ${comparisonProducts.map(product => `
                         <td>${product.dimensions || 'Noma\'lum'}</td>
                     `).join('')}
                 </tr>
                 <tr>
-                    <td>Action</td>
+                    <td data-i18n="compare.action">Action</td>
                     ${comparisonProducts.map(product => {
                         const isTable = product.category === 'Table' || product.category === 'table';
                         const isPenal = product.name === 'penal' || product.id === 310;
                         return (isTable || isPenal) ? 
                             `<td style="color: #d4a373; font-weight: bold;">Narx uchun biz bilan bog'laning</td>` :
-                            `<td><button class="add-to-cart" data-id="${product.id}">Savatga qo'shing</button></td>`;
+                            `<td><button class="add-to-cart" data-id="${product.id}" data-i18n="product.add_to_cart">Savatga qo'shing</button></td>`;
                     }).join('')}
                 </tr>
             </tbody>
@@ -4321,6 +4340,11 @@ function openComparisonModal() {
     `;
     
     comparisonTable.innerHTML = tableHTML;
+    // Translate comparison modal static labels and dynamic buttons
+    if (typeof applyTranslations === 'function') {
+        const lang = localStorage.getItem('site-lang') || document.documentElement.lang || 'uz';
+        applyTranslations(lang);
+    }
     
     // Add event listeners to remove buttons
     document.querySelectorAll('.remove-btn').forEach(button => {
@@ -4336,7 +4360,8 @@ function openComparisonModal() {
         button.addEventListener('click', (e) => {
             const productId = parseInt(e.target.dataset.id);
             addToCart(productId);
-            showNotification('Product added to cart!');
+            const lang = localStorage.getItem('site-lang') || document.documentElement.lang || 'uz';
+            showNotification((i18n[lang] && i18n[lang]['notification.product_added']) || 'Product added to cart!');
         });
     });
     
@@ -4356,9 +4381,11 @@ function updateCartUI() {
 
 // Render cart items
 function renderCartItems() {
+    const lang = localStorage.getItem('site-lang') || document.documentElement.lang || 'uz';
     if (cart.length === 0) {
-        cartItems.innerHTML = '<p>Your cart is empty</p>';
+        cartItems.innerHTML = '<p data-i18n="cart.empty">Your cart is empty</p>';
         totalPrice.textContent = '0';
+        if (typeof applyTranslations === 'function') applyTranslations(lang);
         return;
     }
     
@@ -4371,10 +4398,12 @@ function renderCartItems() {
         
         const cartItem = document.createElement('div');
         cartItem.className = 'cart-item';
+        const qtyLabel = (i18n[lang] && i18n[lang]['cart.quantity_label']) || 'Quantity';
+        const eachLabel = (i18n[lang] && i18n[lang]['cart.each_label']) || 'each';
         cartItem.innerHTML = `
             <div class="cart-item-info">
                 <h4>${item.name}</h4>
-                <p>Quantity: ${item.quantity} | ${formatPrice(item.price)} so'm each</p>
+                <p>${qtyLabel}: ${item.quantity} | ${formatPrice(item.price)} so'm ${eachLabel}</p>
             </div>
             <div class="cart-item-price">${formatPrice(itemTotal)} so'm</div>
             <button class="remove-item" data-id="${item.id}">&times;</button>
@@ -4401,7 +4430,9 @@ function removeFromCart(productId) {
     
     const product = products.find(p => p.id === productId);
     if (product) {
-        showNotification(`${product.name} removed from cart`);
+        const lang = localStorage.getItem('site-lang') || document.documentElement.lang || 'uz';
+        const suffix = (i18n[lang] && i18n[lang]['notification.removed_from_cart']) || 'removed from cart';
+        showNotification(`${product.name} ${suffix}`);
     }
 }
 
@@ -4450,25 +4481,30 @@ function openProductModal(productId) {
             </div>
         </div>
         <div class="product-detail-info">
-            <h3>${product.name}</h3>
+            <h3 data-i18n="product.name.${product.id}">${product.name}</h3>
             <div class="product-rating">
                 <div class="stars">
                     ${generateStars(Math.round(product.rating))}
                 </div>
-                <span class="rating-text">${product.rating} (${product.reviews} reviews)</span>
+                <span class="rating-text" data-rating="${product.rating}" data-reviews="${product.reviews}"></span>
             </div>
-            <p>${product.description}</p>
+            <p data-i18n="product.desc.${product.id}">${product.description}</p>
             ${priceDisplay}
-            <div class="product-detail-actions">
+                <div class="product-detail-actions">
                 ${!(isTable || isPenal) ? 
-                    `<button class="add-to-cart-detail" data-id="${product.id}">Savatga qo'shing</button>` : ''
+                    `<button class="add-to-cart-detail" data-id="${product.id}" data-i18n="product.add_to_cart">Savatga qo'shing</button>` : ''
                 }
                 <button class="wishlist-btn" data-id="${product.id}">
-                    <i class="far fa-heart"></i> Wishlist
+                    <i class="far fa-heart"></i> <span data-i18n="product.wishlist_btn">Wishlist</span>
                 </button>
             </div>
         </div>
     `;
+    // Apply translations to newly created modal content
+    if (typeof applyTranslations === 'function') {
+        const lang = localStorage.getItem('site-lang') || document.documentElement.lang || 'uz';
+        applyTranslations(lang);
+    }
     
     productModal.classList.add('active');
     productModal.style.display = 'flex';
@@ -4495,8 +4531,20 @@ function openProductModal(productId) {
         addToCartBtn.addEventListener('click', (e) => {
             addToCart(productId);
             closeProductModal();
-            showNotification(`${product.name} added to cart!`);
+            {
+                const lang = localStorage.getItem('site-lang') || document.documentElement.lang || 'uz';
+                const suffix = (i18n[lang] && i18n[lang]['notification.added_to_cart']) || 'added to cart!';
+                showNotification(`${product.name} ${suffix}`);
+            }
         });
+    }
+
+    // Set rating text using translations
+    const ratingEl = productDetail.querySelector('.rating-text');
+    if (ratingEl) {
+        const lang = localStorage.getItem('site-lang') || document.documentElement.lang || 'uz';
+        const reviewsLabel = (i18n[lang] && i18n[lang]['product.reviews_label']) || 'reviews';
+        ratingEl.textContent = `${ratingEl.dataset.rating} (${ratingEl.dataset.reviews} ${reviewsLabel})`;
     }
     
     // Add event listener to Wishlist button
@@ -4506,11 +4554,17 @@ function openProductModal(productId) {
         if (e.target.classList.contains('active')) {
             icon.className = 'fas fa-heart';
             addToWishlist(productId);
-            showNotification(`${product.name} added to wishlist!`);
+            {
+                const lang = localStorage.getItem('site-lang') || document.documentElement.lang || 'uz';
+                showNotification(`${product.name} ${(i18n[lang] && i18n[lang]['notification.added_to_wishlist']) || 'added to wishlist!'}`);
+            }
         } else {
             icon.className = 'far fa-heart';
             removeFromWishlist(productId);
-            showNotification(`${product.name} removed from wishlist!`);
+            {
+                const lang = localStorage.getItem('site-lang') || document.documentElement.lang || 'uz';
+                showNotification(`${product.name} ${(i18n[lang] && i18n[lang]['notification.removed_from_wishlist']) || 'removed from wishlist!'}`);
+            }
         }
     });
 }
@@ -4606,17 +4660,25 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 // Initialize parallax effect
 function initParallax() {
+    const hero = document.querySelector('.hero');
+    const heroVideo = document.getElementById('hero-video');
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReduced) return;
+
     window.addEventListener('scroll', () => {
         const scrollPosition = window.pageYOffset;
-        const hero = document.querySelector('.hero');
-        
-        if (hero) {
+        if (heroVideo) {
+            // subtle translate for parallax-like effect on video
+            heroVideo.style.transform = `translateY(${scrollPosition * 0.15}px)`;
+        } else if (hero) {
             hero.style.backgroundPositionY = `${scrollPosition * 0.5}px`;
         }
     });
 }
 
-contactForm.addEventListener('submit', async (e) => {
+if (contactForm) {
+    contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const name = document.querySelector('.contact-form input[type="text"]').value;
@@ -4650,18 +4712,21 @@ contactForm.addEventListener('submit', async (e) => {
             throw new Error('Telegram botga yuborishda xatolik yuz berdi');
         }
         
-        showNotification('Xabaringiz muvaffaqiyatli yuborildi!', 'success');
+        {
+            const lang = localStorage.getItem('site-lang') || document.documentElement.lang || 'uz';
+            showNotification((i18n[lang] && i18n[lang]['notification.message_sent']) || 'Your message was sent successfully!', 'success');
+        }
         contactForm.reset();
     } catch (error) {
         console.error('Xatolik:', error);
-        showNotification('Xabar yuborishda xatolik yuz berdi', 'error');
+        {
+            const lang = localStorage.getItem('site-lang') || document.documentElement.lang || 'uz';
+            showNotification((i18n[lang] && i18n[lang]['notification.message_error']) || 'There was an error sending your message', 'error');
+        }
     }
     */
-    showNotification('Xabaringiz muvaffaqiyatli yuborildi! (Telegram integratsiyasi o\'chirilgan)');
-    if (contactForm) {
-        contactForm.reset();
-    }
-});
+    });
+}
 
 // Display wishlist items
 function displayWishlist() {
@@ -4707,23 +4772,28 @@ function displayWishlist() {
             </div>
             <div class="product-info">
                 <div class="product-meta">
-                    <span class="product-category">ID: ${product.id}</span>
+                    <span class="product-category"><span data-i18n="product.id_label">ID:</span> ${product.id}</span>
                     <div class="product-rating">
                         ${generateStars(Math.round(product.rating))}
                         <span class="rating-count">(${product.reviews})</span>
                     </div>
                 </div>
-                <h3>${product.name}</h3>
-                <p>${product.description.substring(0, 80)}${product.description.length > 80 ? '...' : ''}</p>
+                <h3 data-i18n="product.name.${product.id}">${product.name}</h3>
+                <p data-i18n="product.desc.${product.id}">${product.description.substring(0, 80)}${product.description.length > 80 ? '...' : ''}</p>
                 ${priceDisplay}
                 <div class="product-actions">
-                    <button class="view-details" data-id="${product.id}">View Details</button>
-                    ${!(isTable || isPenal) ? `<button class="add-to-cart" data-id="${product.id}">Savatga qo'shing</button>` : ''}
+                    <button class="view-details" data-id="${product.id}" data-i18n="product.view">View Details</button>
+                    ${!(isTable || isPenal) ? `<button class="add-to-cart" data-id="${product.id}" data-i18n="product.add_to_cart">Savatga qo'shing</button>` : ''}
                 </div>
             </div>
         `;
         wishlistGrid.appendChild(wishlistItem);
     });
+    // Translate dynamically created wishlist items
+    if (typeof applyTranslations === 'function') {
+        const lang = localStorage.getItem('site-lang') || document.documentElement.lang || 'uz';
+        applyTranslations(lang);
+    }
     
     // Add event listeners
     document.querySelectorAll('#wishlist-grid .wishlist-icon').forEach(button => {
@@ -4756,4 +4826,309 @@ function displayWishlist() {
             addToComparison(productId);
         });
     });
+}
+
+/* ------------------
+   Simple i18n: language selector + persistence
+   ------------------ */
+const i18n = {
+    en: {
+        'nav.home': 'Home',
+        'nav.catalog': 'Catalog',
+        'nav.wishlist': 'Wishlist',
+        'nav.about': 'About',
+        'nav.contact': 'Contact',
+        'nav.cart': 'Cart',
+        'loading.welcome': 'Welcome',
+        'loading.wishlist': 'Wishlist',
+        'hero.title': 'Mashxura Mebel',
+        'hero.subtitle': 'Modern, comfortable furniture for your home',
+        'cta.view_products': 'View Products',
+        'section.products': 'Products',
+        'price.note_label': 'Note:',
+        'price.notice_text': 'Prices displayed on the site may differ from current in-store prices. Contact us for exact pricing.',
+        'search.placeholder': 'Search...',
+        'filters.all': 'All',
+        'filters.table': 'Dining',
+        'filters.sofa': 'Compact',
+        'filters.bed': 'Soft Furniture',
+        'filters.lamp': 'Bedroom',
+        'filters.stul': 'Tables',
+        'filters.stuls': 'Chairs',
+        'filters.penal': 'Cabinets',
+        'about.title': 'Creating comfort since 2005',
+        'about.p1': 'At Mashhura Mebel we believe exceptional design and comfort go hand-in-hand. Our journey began with a simple idea: create furniture that truly makes a house feel like home.',
+        'about.p2': 'Each piece in our collection is crafted from sustainable materials with timeless aesthetics, ensuring your space remains stylish for years.',
+        'contact.title': 'Contact',
+        'contact.heading': 'Contact Info',
+        'contact.address': "Top-quality furniture in Uzbekistan",
+        'contact.phone': '+998 95 541 17 60',
+        'contact.email': 'mebelmashhura.uz',
+        'footer.brand': 'Mahhura Furniture',
+        'footer.copy': '© 2025 Mebel Mashxura',
+        'cart.title': 'Your Cart',
+        'cart.total': 'Total: $',
+        'cart.checkout': 'Checkout',
+        'compare.title': 'Product Comparison',
+        'wishlist.title': 'Wishlist',
+        'wishlist.subtitle': 'Your selected products',
+        'wishlist.empty.title': "You don't have any favorites yet",
+        'wishlist.empty.text': 'Browse products and add favourites to the list',
+        'wishlist.empty.cta': 'Browse Products'
+        ,
+        'no_products': 'No products found. Try a different search.',
+        'compare.features': 'Features',
+        'compare.price': 'Price',
+        'compare.rating': 'Rating',
+        'compare.material': 'Material',
+        'compare.dimensions': 'Dimensions',
+        'compare.action': 'Action',
+        'product.new': 'New',
+        'product.id_label': 'ID:',
+        'product.view': 'View Details',
+        'product.add_to_cart': "Add to cart"
+        ,
+        'product.reviews_label': 'reviews',
+        'product.wishlist_btn': 'Wishlist',
+        'notification.added_to_cart': 'added to cart!',
+        'notification.removed_from_cart': 'removed from cart',
+        'notification.added_to_wishlist': 'added to wishlist!',
+        'notification.removed_from_wishlist': 'removed from wishlist!',
+        'notification.compare_limit': 'You can only compare up to 4 products!',
+        'notification.added_to_comparison': 'Product added to comparison!',
+        'notification.removed_from_comparison': 'Product removed from comparison!',
+        'notification.product_added': 'Product added to cart!'
+        ,
+        'notification.no_products_compare': 'No products to compare!',
+        'notification.message_sent': 'Your message was sent successfully!',
+        'notification.message_error': 'There was an error sending your message',
+        'notification.message_sent_offline': 'Your message was sent (Telegram integration disabled)'
+        ,
+        'cart.empty': 'Your cart is empty',
+        'cart.quantity_label': 'Quantity',
+        'cart.each_label': 'each'
+    },
+    uz: {
+        'nav.home': "Bosh Menu",
+        'nav.catalog': "Mahsulotlar",
+        'nav.wishlist': "Yoqtirganlar",
+        'nav.about': "Malumot",
+        'nav.contact': "Aloqa",
+        'nav.cart': "Savat",
+        'loading.welcome': "Xush Kelibsiz",
+        'loading.wishlist': "Yoqtirganlar",
+        'hero.title': 'Mashxura Mebel',
+        'hero.subtitle': "Zamonaviy va qulay mebellar — sizning uyingiz uchun",
+        'cta.view_products': "Maxsulotlarni Ko'rish",
+        'section.products': 'Mahsulotlar',
+        'price.note_label': 'Eslatma:',
+        'price.notice_text': "Saytda ko‘rsatilgan narxlar do‘kondagi amaldagi narxlarga mos kelmasligi mumkin. Aniq narxni bilish uchun biz bilan bog‘laning.",
+        'search.placeholder': 'Qidiring...',
+        'filters.all': 'Hammasi',
+        'filters.table': 'Oshxona',
+        'filters.sofa': 'Kichkina Mebellar',
+        'filters.bed': 'Yumshoq Mebel',
+        'filters.lamp': 'Yotoqxona',
+        'filters.stul': 'Stollar',
+        'filters.stuls': 'Stullar',
+        'filters.penal': 'Penal',
+        'about.title': '2005-yildan buyon qulaylik yaratamiz',
+        'about.p1': "Mashhura Mebelda biz mukammal dizayn va qulaylik birga keladi, deb ishonamiz. Bizning sayohatimiz sodda bir g'oyadan boshlangan: uylarni chinakam uyga aylantiradigan mebel yaratish.",
+        'about.p2': "Kolleksiyamizdagi har bir mahsulot barqaror materiallar va vaqt sinovidan o'tgan estetika bilan puxta ishlangan, bu sizning makoningizni yillar davomida stil va qulay holda saqlaydi.",
+        'contact.title': 'Aloqa',
+        'contact.heading': 'Malumotlarimiz',
+        'contact.address': "Mebel bo'yicha O'zbekistonda eng sifatli daraja",
+        'contact.phone': '+998 95 541 17 60',
+        'contact.email': 'mebelmashhura.uz',
+        'footer.brand': 'Mahhura Furniture',
+        'footer.copy': '© 2025 Mebel Mashxura',
+        'cart.title': 'Savat',
+        'cart.total': 'Jami: $',
+        'cart.checkout': "To'lov",
+        'compare.title': 'Mahsulotlarni solishtirish',
+        'wishlist.title': 'Yoqtirganlar',
+        'wishlist.subtitle': "Sizning tanlagan mahsulotlaringiz",
+        'wishlist.empty.title': "Hozircha yoqtirganlaringiz yo'q",
+        'wishlist.empty.text': "Mahsulotlarni ko'rib chiqing va yoqtirganlar ro'yxatiga qo'shing",
+        'wishlist.empty.cta': "Mahsulotlarni ko'ring"
+        ,
+        'no_products': "Hech qanday mahsulot topilmadi. Boshqa qidiruvni sinab ko'ring.",
+        'compare.features': 'Xususiyatlar',
+        'compare.price': 'Narx',
+        'compare.rating': 'Baholash',
+        'compare.material': 'Material',
+        'compare.dimensions': "O'lchamlar",
+        'compare.action': 'Amal',
+        'product.new': 'Yangi',
+        'product.id_label': 'ID:',
+        'product.view': "Ko'rish",
+        'product.add_to_cart': "Savatga qo'shing"
+        ,
+        'product.reviews_label': 'fikrlar',
+        'product.wishlist_btn': 'Yoqtirganlar',
+        'notification.added_to_cart': "savatga qo'shildi!",
+        'notification.removed_from_cart': "savatdan o'chirildi",
+        'notification.added_to_wishlist': "Yoqtirganlarga qo'shildi!",
+        'notification.removed_from_wishlist': "Yoqtirganlardan o'chirildi!",
+        'notification.compare_limit': "Siz faqat 4 tagacha mahsulotni solishtirishingiz mumkin!",
+        'notification.added_to_comparison': "Mahsulot solishtirishga qo'shildi!",
+        'notification.removed_from_comparison': "Mahsulot solishtirishdan o'chirildi!",
+        'notification.product_added': "Mahsulot savatga qo'shildi!"
+        ,
+        'notification.no_products_compare': "Solishtirish uchun mahsulotlar mavjud emas!",
+        'notification.message_sent': "Xabaringiz muvaffaqiyatli yuborildi!",
+        'notification.message_error': "Xabar yuborishda xatolik yuz berdi",
+        'notification.message_sent_offline': "Xabaringiz yuborildi (Telegram integratsiyasi o'chirilgan)"
+        ,
+        'cart.empty': "Savat bo'sh",
+        'cart.quantity_label': 'Soni',
+        'cart.each_label': "har biri"
+    },
+    ru: {
+        'nav.home': 'Главная',
+        'nav.catalog': 'Каталог',
+        'nav.wishlist': 'Избранное',
+        'nav.about': 'О нас',
+        'nav.contact': 'Контакты',
+        'nav.cart': 'Корзина',
+        'loading.welcome': 'Добро пожаловать',
+        'loading.wishlist': 'Избранное',
+        'hero.title': 'Mashxura Mebel',
+        'hero.subtitle': 'Современная и удобная мебель для вашего дома',
+        'cta.view_products': 'Посмотреть товары',
+        'section.products': 'Товары',
+        'price.note_label': 'Примечание:',
+        'price.notice_text': 'Цены на сайте могут отличаться от актуальных в магазине. Свяжитесь с нами для уточнения цен.',
+        'search.placeholder': 'Поиск...',
+        'filters.all': 'Все',
+        'filters.table': 'Столовые',
+        'filters.sofa': 'Компактные',
+        'filters.bed': 'Мягкая мебель',
+        'filters.lamp': 'Спальня',
+        'filters.stul': 'Столы',
+        'filters.stuls': 'Стулья',
+        'filters.penal': 'Шкафы',
+        'about.title': 'Создаём комфорт с 2005 года',
+        'about.p1': 'В Mashhura Mebel мы верим, что исключительный дизайн и комфорт идут рука об руку. Наша история началась с простой идеи: создать мебель, делающую дом по-настоящему уютным.',
+        'about.p2': 'Каждый предмет коллекции изготовлен из устойчивых материалов с вечной эстетикой, чтобы ваше пространство оставалось стильным годами.',
+        'contact.title': 'Контакты',
+        'contact.heading': 'Наши данные',
+        'contact.address': 'Высококачественная мебель в Узбекистане',
+        'contact.phone': '+998 95 541 17 60',
+        'contact.email': 'mebelmashhura.uz',
+        'footer.brand': 'Mahhura Furniture',
+        'footer.copy': '© 2025 Mebel Mashxura',
+        'cart.title': 'Ваша корзина',
+        'cart.total': 'Итого: $',
+        'cart.checkout': 'Оформить заказ',
+        'compare.title': 'Сравнение товаров',
+        'wishlist.title': 'Избранное',
+        'wishlist.subtitle': 'Ваши выбранные товары',
+        'wishlist.empty.title': 'Пока нет избранного',
+        'wishlist.empty.text': 'Просмотрите товары и добавьте понравившиеся в избранное',
+        'wishlist.empty.cta': 'Просмотреть товары'
+        ,
+        'no_products': 'Товары не найдены. Попробуйте другой поиск.',
+        'compare.features': 'Характеристики',
+        'compare.price': 'Цена',
+        'compare.rating': 'Рейтинг',
+        'compare.material': 'Материал',
+        'compare.dimensions': 'Размеры',
+        'compare.action': 'Действие',
+        'product.new': 'Новинка',
+        'product.id_label': 'ID:',
+        'product.view': 'Подробнее',
+        'product.add_to_cart': 'Добавить в корзину'
+        ,
+        'product.reviews_label': 'отзывов',
+        'product.wishlist_btn': 'Избранное',
+        'notification.added_to_cart': 'добавлено в корзину!',
+        'notification.removed_from_cart': 'удалено из корзины',
+        'notification.added_to_wishlist': 'добавлено в избранное!',
+        'notification.removed_from_wishlist': 'удалено из избранного!',
+        'notification.compare_limit': 'Вы можете сравнивать не более 4 товаров!',
+        'notification.added_to_comparison': 'Товар добавлен в сравнение!',
+        'notification.removed_from_comparison': 'Товар удалён из сравнения!',
+        'notification.product_added': 'Товар добавлен в корзину!'
+        ,
+        'notification.no_products_compare': 'Нет товаров для сравнения!',
+        'notification.message_sent': 'Ваше сообщение успешно отправлено!',
+        'notification.message_error': 'Произошла ошибка при отправке сообщения',
+        'notification.message_sent_offline': 'Ваше сообщение отправлено (Telegram интеграция отключена)'
+        ,
+        'cart.empty': 'Ваша корзина пуста',
+        'cart.quantity_label': 'Количество',
+        'cart.each_label': 'каждый'
+    }
+};
+
+// Populate missing product name/description keys in i18n from `products` as fallbacks
+if (typeof products !== 'undefined') {
+    products.forEach(p => {
+        ['en','uz','ru'].forEach(lang => {
+            if (!i18n[lang]) i18n[lang] = {};
+            const nameKey = `product.name.${p.id}`;
+            const descKey = `product.desc.${p.id}`;
+            if (!i18n[lang][nameKey]) i18n[lang][nameKey] = p.name;
+            if (!i18n[lang][descKey]) i18n[lang][descKey] = p.description;
+        });
+    });
+
+    // Apply translations after populating keys so rendered product elements update
+    const currentLang = localStorage.getItem('site-lang') || document.documentElement.lang || 'uz';
+    if (typeof applyTranslations === 'function') applyTranslations(currentLang);
+}
+
+function applyTranslations(lang){
+    if (typeof i18n === 'undefined') return;
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        // support dynamic keys like product.name.1 or product.desc.1
+        let txt = el.textContent;
+        if (i18n[lang] && i18n[lang][key]) {
+            txt = i18n[lang][key];
+        }
+        el.textContent = txt;
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.dataset.i18nPlaceholder;
+        const txt = (i18n[lang] && i18n[lang][key]) || el.placeholder || '';
+        el.placeholder = txt;
+    });
+    // Some keys use composed HTML; update common ones
+    const priceNote = document.querySelector('.price-notice');
+    if(priceNote){
+        const noteLabel = i18n[lang] && i18n[lang]['price.note_label'];
+        const noteText = i18n[lang] && i18n[lang]['price.notice_text'];
+        if(noteLabel && noteText){
+            priceNote.innerHTML = `<i class="fas fa-info-circle"></i> <span><strong>${noteLabel}</strong> ${noteText}</span>`;
+        }
+    }
+}
+
+function setLang(lang){
+    if(!['en','uz','ru'].includes(lang)) lang = 'uz';
+    localStorage.setItem('site-lang', lang);
+    document.querySelectorAll('#lang-select').forEach(s => s.value = lang);
+    applyTranslations(lang);
+}
+
+// Initialize language selector reliably (run now or on DOMContentLoaded)
+function initLanguageSelector(){
+    const saved = localStorage.getItem('site-lang') || (navigator.language && navigator.language.slice(0,2)) || 'uz';
+    const lang = ['en','uz','ru'].includes(saved) ? saved : 'uz';
+    document.querySelectorAll('#lang-select').forEach(select => {
+        select.value = lang;
+        // Remove duplicate listeners by cloning the node (safe idempotent attach)
+        select.addEventListener('change', (e) => setLang(e.target.value));
+    });
+    setLang(lang);
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLanguageSelector);
+} else {
+    // DOM already ready
+    initLanguageSelector();
 }
